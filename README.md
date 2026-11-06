@@ -8,7 +8,7 @@ Colunas de veículos inimigos avançam pela estrada até a sua base. Monte armas
 
 Abra `index.html` no navegador (computador ou celular, de preferência na horizontal).
 
-- Escolha uma arma no painel e toque num terreno livre. No celular, toque duas vezes no mesmo lugar para confirmar.
+- Toque na arma no painel e depois num quadrado livre ao lado da pista: a arma é instalada na hora. Os lugares livres ficam destacados enquanto a arma está selecionada.
 - Toque numa arma já construída para **melhorar** (até o nível 3), mudar o **alvo** (primeiro, mais forte, mais perto) ou **vender** (devolve 70%).
 - **Chamar onda** antecipa a próxima onda e dá energia extra.
 - **x2 / x3** acelera o jogo; **II** pausa.

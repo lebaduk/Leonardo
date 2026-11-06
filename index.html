@@ -214,7 +214,7 @@ h1 span { color: var(--amber); }
         <button id="btn-sound">Som: ligado</button>
       </div>
       <div class="how">
-        <div><b>Construa</b>Escolha uma arma no painel e toque num terreno livre perto da estrada.</div>
+        <div><b>Construa</b>Toque numa arma no painel e depois num quadrado livre ao lado da pista. Pronto, a arma está instalada.</div>
         <div><b>Blindagem</b>Cada tiro perde força contra a blindagem. Tanques pedem mísseis, laser e artilharia.</div>
         <div><b>Melhore</b>Toque numa arma para melhorar até o nível 3, mudar o alvo ou vender.</div>
       </div>
@@ -865,6 +865,12 @@ function render() {
   if (G.sel) { const s = stats(G.sel); showRange(G.sel.x, G.sel.y, s.range, true, s.min); }
   // armas
   for (const t of G.towers) { c.save(); c.translate(t.x, t.y); drawTowerShape(c, t.type, t.lvl, t.ang, t.a); c.restore(); if (t === G.sel) { c.strokeStyle = "#f2a93b"; c.lineWidth = 2; rr(c, t.x - 22, t.y - 22, 44, 44, 8); c.stroke(); } }
+  if (G.build) { // marca os lugares livres para a arma escolhida
+    const pulse = 0.35 + 0.2 * Math.sin(G.t * 5);
+    c.strokeStyle = `rgba(242,169,59,${pulse + 0.2})`; c.fillStyle = `rgba(242,169,59,${pulse * 0.35})`; c.lineWidth = 1.5;
+    const g = G.stage.grid, byRoad = (r, col) => { for (let y = r - 1; y <= r + 1; y++) for (let x = col - 1; x <= col + 1; x++) if (g[y] && g[y][x] === 1) return true; return false; };
+    for (let r = 0; r < ROWS; r++) for (let col = 0; col < COLS; col++) if (g[r][col] === 0 && byRoad(r, col)) { rr(c, col * T + 8, r * T + 8, T - 16, T - 16, 6); c.fill(); c.stroke(); }
+  }
   if (G.ghost && G.build) {
     const { c: gc, r: gr } = G.ghost, x = (gc + 0.5) * T, y = (gr + 0.5) * T, ok = G.stage.grid[gr][gc] === 0 && G.money >= TOWERS[G.build].cost;
     const s = TOWERS[G.build].lv[0]; showRange(x, y, s.range, ok, s.min);
@@ -1030,15 +1036,15 @@ cv.addEventListener("pointerdown", (ev) => {
   const hit = G.towers.find((t) => t.c === c && t.r === r);
   if (G.build) {
     if (hit) { G.build = null; refreshArmory(); selectTower(hit); return; }
-    const touch = ev.pointerType !== "mouse";
-    if (touch && !(G.ghost && G.ghost.c === c && G.ghost.r === r)) { G.ghost = { c, r }; if (G.stage.grid[r][c] !== 0) toast("Esse terreno está ocupado"); else toast2("Toque de novo para construir"); return; }
-    const t = placeTower(G.build, c, r);
-    if (t) { G.ghost = touch ? null : G.ghost; if (G.money < TOWERS[G.build].cost) { G.build = null; G.ghost = null; refreshArmory(); } }
+    const cell = G.stage.grid[r][c];
+    if (cell === 1) return toast("Coloque a arma ao lado da pista");
+    if (cell !== 0) return toast("Esse lugar está ocupado");
+    // um toque na arma + um toque no campo = arma instalada
+    if (placeTower(G.build, c, r)) { G.build = null; G.ghost = null; refreshArmory(); }
     return;
   }
   selectTower(hit && hit !== G.sel ? hit : null);
 });
-function toast2(msg) { const el = $("toast"); el.style.background = "var(--panel-2)"; toast(msg); setTimeout(() => (el.style.background = ""), 1500); }
 window.addEventListener("keydown", (ev) => {
   if (!G || $("screen-game").hidden) return;
   if (ev.key === "Escape") { if (G.build || G.strikeArm || G.sel) { G.build = null; G.strikeArm = false; G.ghost = null; selectTower(null); refreshArmory(); } else togglePause(); }
