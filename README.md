@@ -6,7 +6,7 @@ Colunas de veículos inimigos avançam pela estrada até a sua base. Monte armas
 
 ## Como jogar
 
-Abra `index.html` no navegador (computador ou celular, de preferência na horizontal).
+Abra `index.html` no navegador (computador ou celular). No celular, jogue na horizontal: o jogo entra em tela cheia ao escolher a fase e o botão **Tela cheia** liga ou desliga isso. Se o dedo cair um pouco em cima da pista, a arma vai para o quadrado livre mais próximo.
 
 - Toque na arma no painel e depois num quadrado livre ao lado da pista: a arma é instalada na hora. Os lugares livres ficam destacados enquanto a arma está selecionada.
 - Toque numa arma já construída para **melhorar** (até o nível 3), mudar o **alvo** (primeiro, mais forte, mais perto) ou **vender** (devolve 70%).
